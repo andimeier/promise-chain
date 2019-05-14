@@ -1,4 +1,4 @@
-const promiseChain = require("../lib/index.js")({ debugOutput: true });
+const promiseChain = require("../lib/index.js");
 
 const ok = () => Promise.resolve();
 
@@ -49,6 +49,7 @@ const complexChain2 = [
   {
     name: "algoCommit-exists",
     promise: nok,
+    noError: true,
     onReject: {
       name: "algoCommit-fetch",
       promise: ok,
@@ -61,6 +62,7 @@ const complexChain2 = [
   {
     name: "parametersCommit-exists",
     promise: ok,
+    noError: true,
     onReject: {
       name: "parametersCommit-fetch",
       promise: ok,

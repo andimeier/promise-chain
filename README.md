@@ -1,5 +1,8 @@
 # Promise-chain
 
+This lib aims to make a network of promises easily configurable. Rejection of a promise should not lead per se to an overall rejection,
+but you can define an "on reject" handler (another promise following in the "reject" case). 
+
 ## Terminology
 
 * "chain" ... the chained promises
@@ -9,19 +12,16 @@
 
 Include the lib in your app:
 
-    const promiseChain = require('promise-chain');
+```js
+const promiseChain = require('promise-chain');
+```
 
-You can also pass an optional config object
+You can switch on debugging output with:
 
-    const promiseChain = require('promise-chain')({
-        debugOutput: true
-    });
-
-## Configuration
-
-The configurable options which can be passed via the config objects at `require` time are:
-
-* `debugOutput` ... if set to true, the lib will output some debugging messages during execution of the promises
+```js
+const promiseChain = require('promise-chain');
+promiseChain.setDeubg(true);
+```
 
 ## Specifying a promise chain
 
@@ -33,8 +33,9 @@ Recognized properties are:
 * `onResolve` ... {ChainItem} the next chain item to be executed on success of the current item
 * `onReject` ... {ChainItem} the next chain item to be executed if the current item rejects
 * `name` ...{string}  an identifier string. This is used a the key for the errors object
-* `noError` ... {boolean} if not set, a rejected promise will be registered in the `errors` structure of the result object. 
-If true, the rejection will be silently ignored (in this case, usually a `onRejecty` property makes sense to continue with some next chain item which could work around the error somehow). Default is false.
+* `setError` ... {boolean} if set, a rejected promise will even be registered in the `errors` structure of the result object if 
+it has an `onReject` successor. If false,a rejected promise with a `onReject` successor will not produce an error. A rejected promise
+*without* an `onReject` setting will *always* produce an error. Default is false.
 
 Returned result object:
 
