@@ -1,8 +1,82 @@
-const promiseChain = require("../lib/index.js");
+const promiseChain = require("../lib/index.js")({ debugOutput: true });
 
 const ok = () => Promise.resolve();
 
 const nok = () => Promise.reject("oh no");
+
+const complexChain1 = {
+    name: "datasetPath-exists",
+    promise: nok,
+    noError: true,
+    onReject: {
+      name: "fallback",
+      promise: ok
+    }
+  };
+  /*
+  ,
+  {
+    name: "algoCommit-exists",
+    promise: ok,
+    onReject: {
+      name: "algoCommit-fetch",
+      promise: ok,
+      onResolve: {
+        name: "algoCommit-exists2",
+        promise: ok
+      }
+    },
+  },
+  {
+    name: "parametersCommit-exists",
+    promise: ok,
+    onReject: {
+      name: "parametersCommit-fetch",
+      promise: ok,
+      onResolve: {
+        name: "parametersCommit-exists2",
+        promise: ok
+      }
+    },
+  }
+*/
+
+const complexChain2 = [
+  {
+    name: "datasetPath-exists",
+    promise: ok
+  },
+  {
+    name: "algoCommit-exists",
+    promise: nok,
+    onReject: {
+      name: "algoCommit-fetch",
+      promise: ok,
+      onResolve: {
+        name: "algoCommit-exists2",
+        promise: ok
+      }
+    }
+  },
+  {
+    name: "parametersCommit-exists",
+    promise: ok,
+    onReject: {
+      name: "parametersCommit-fetch",
+      promise: ok,
+      onResolve: {
+        name: "parametersCommit-exists2",
+        promise: ok
+      }
+    }
+  }
+];
+
+//promiseChain.execute(complexChain1);
+
+promiseChain.execute(complexChain1);
+
+return;
 
 promiseChain
   .execute([

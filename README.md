@@ -5,7 +5,25 @@
 * "chain" ... the chained promises
 * "chain item" ... one promise plus its metadata for linking it within the chain
 
+## Basic Usage
+
+Include the lib in your app:
+
+    const promiseChain = require('promise-chain');
+
+You can also pass an optional config object
+
+    const promiseChain = require('promise-chain')({
+        debugOutput: true
+    });
+
 ## Configuration
+
+The configurable options which can be passed via the config objects at `require` time are:
+
+* `debugOutput` ... if set to true, the lib will output some debugging messages during execution of the promises
+
+## Specifying a promise chain
 
 A "chain item" is nothing else than a promise returning function plus a couple of properties which define the chaining behavior.
 

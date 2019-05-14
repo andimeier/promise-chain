@@ -4,7 +4,8 @@
   "description": "flexible configuration of chained and parallel promises",
   "main": "lib/index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "test-inspect": "mocha --inspect-brk"
   },
   "keywords": [
     "promises"
