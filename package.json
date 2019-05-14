@@ -4,11 +4,16 @@
   "description": "flexible configuration of chained and parallel promises",
   "main": "lib/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [
     "promises"
   ],
   "author": "Alexander Eck-Zimmer",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "lodash": "^4.17.11",
+    "mocha": "^6.1.4"
+  }
 }
