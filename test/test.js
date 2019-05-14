@@ -5,15 +5,15 @@ const ok = () => Promise.resolve();
 const nok = () => Promise.reject("oh no");
 
 const complexChain1 = {
-    name: "datasetPath-exists",
-    promise: nok,
-    noError: true,
-    onReject: {
-      name: "fallback",
-      promise: ok
-    }
-  };
-  /*
+  name: "datasetPath-exists",
+  promise: nok,
+  noError: true,
+  onReject: {
+    name: "fallback",
+    promise: ok
+  }
+};
+/*
   ,
   {
     name: "algoCommit-exists",
@@ -74,7 +74,12 @@ const complexChain2 = [
 
 //promiseChain.execute(complexChain1);
 
-promiseChain.execute(complexChain1);
+promiseChain.execute(complexChain2).then(() => {
+  console.log("Success!");
+}).catch(e => {
+  console.log("There have been errors!");
+  console.log(`errors: ${JSON.stringify(e)}`);
+});
 
 return;
 
