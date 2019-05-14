@@ -7,7 +7,7 @@ const nok = () => Promise.reject("oh no");
 const complexChain1 = {
   name: "datasetPath-exists",
   promise: nok,
-  noError: true,
+  //setError: true,
   onReject: {
     name: "fallback",
     promise: ok
@@ -76,7 +76,7 @@ const complexChain2 = [
 
 //promiseChain.execute(complexChain1);
 
-promiseChain.execute(complexChain2).then(() => {
+promiseChain.execute(complexChain1).then((result) => {
   console.log("Success!");
 }).catch(e => {
   console.log("There have been errors!");
