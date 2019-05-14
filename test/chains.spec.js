@@ -110,7 +110,7 @@ describe("Promises", function() {
   });
 
   describe("onReject handling", function() {
-    it("should call the 'onReject' successor", async () => {
+    it("should call the 'onReject' successor and set no error message", async () => {
       const msg = "my message";
 
       const result = await promiseChain.execute({
@@ -123,14 +123,123 @@ describe("Promises", function() {
       });
 
       assert.sameMembers(result.success, ["onReject-successor"]);
+      assert.isEmpty(result.errors);
+    });
+  });
+
+  describe("onReject handling", function() {
+    it("should call the 'onReject' successor and not call the 'onResolve' successor", async () => {
+      const msg = "my message";
+
+      const result = await promiseChain.execute({
+        name: "A",
+        promise: () => Promise.reject(msg),
+        onResolve: {
+          name: "onResolve-successor",
+          promise: ok
+        },
+        onReject: {
+          name: "onReject-successor",
+          promise: ok
+        }
+      });
+
+      assert.sameMembers(result.success, ["onReject-successor"]);
+      assert.isEmpty(result.errors);
+    });
+  });
+
+  describe("onResolve handling", function() {
+    it("should call the 'onResolve' successor and not call the 'onReject' successor", async () => {
+      const msg = "my message";
+
+      const result = await promiseChain.execute({
+        name: "A",
+        promise: ok,
+        onResolve: {
+          name: "onResolve-successor",
+          promise: ok
+        },
+        onReject: {
+          name: "onReject-successor",
+          promise: ok
+        }
+      });
+
+      assert.sameMembers(result.success, ['A', "onResolve-successor"]);
+      assert.isEmpty(result.errors);
+    });
+  });
+
+  describe("onReject handling", function() {
+    it("should call the 'onReject' successor and set an error message", async () => {
+      const msg = "my message";
+
+      debugger;
+
+      try {
+        await promiseChain.execute({
+          name: "A",
+          promise: () => Promise.reject(msg),
+          setError: true,
+          onReject: {
+            name: "onReject-successor",
+            promise: ok
+          }
+        });
+
+        assert.fail(
+          "you should never land here since this would mean that the chain was not rejected"
+        );
+      } catch (result) {
+        if (isFailedAssertion(result)) {
+          assert.fail("promise was not rejected");
+        }
+        assert.hasAllKeys(result.errors, ["A"]);
+        assert.sameMembers(result.success, ["onReject-successor"]);
+      }
     });
   });
 
   describe("complex chain", function() {
     it("should execute successfully", async () => {
-      await promiseChain.execute(complexChain);
+      const result = await promiseChain.execute([
+        {
+          name: "datasetPath-exists",
+          promise: ok
+        },
+        {
+          name: "algoCommit-exists",
+          promise: nok,
+          onReject: {
+            name: "algoCommit-fetch",
+            promise: ok,
+            onResolve: {
+              name: "algoCommit-exists2",
+              promise: ok
+            }
+          }
+        },
+        {
+          name: "parametersCommit-exists",
+          promise: ok,
+          onReject: {
+            name: "parametersCommit-fetch",
+            promise: ok,
+            onResolve: {
+              name: "parametersCommit-exists2",
+              promise: ok
+            }
+          }
+        }
+      ]);
 
-      assert.isTrue(true);
+      assert.sameMembers(result.success, [
+        "datasetPath-exists",
+        "algoCommit-fetch",
+        "algoCommit-exists2",
+        "parametersCommit-exists"
+      ]);
     });
   });
 
